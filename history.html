@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>History</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      @media (max-width: 576px) {
+        .title {
+          font-size: 1rem;
+        }
+        .btn-back {
+          width: 36px;
+          height: 36px;
+        }
+        .btn-back img {
+          width: 12px;
+          height: 12px;
+        }
+        .chart-wrapper {
+          margin-bottom: 2rem;
+        }
+      }
+      .btn-back {
+        background-color: #252b61;
+        border: none;
+        border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-back img {
+        width: 14px;
+        height: 14px;
+      }
+      .title {
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
+        font-size: 1.25rem;
+        color: #252b61;
+        margin-left: 10px;
+      }
+      .btn-primary {
+        background-color: #252b61;
+        border: none;
+      }
+      .btn-primary:hover {
+        background-color: #1b204d;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container py-5">
+      <div class="d-flex align-items-center gap-2 mb-4">
+        <button class="btn-back" onclick="window.location.href='home.html'">
+          <img src="back.png" alt="Back" />
+        </button>
+        <div class="title">History</div>
+      </div>
+
+      <!-- Tabel Kode Test -->
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Kode Test</th>
+                <th scope="col">Periksa</th>
+              </tr>
+            </thead>
+            <tbody id="kodeTestTable">
+              <!-- Isi tabel nanti di-generate otomatis -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="dataModal"
+      tabindex="-1"
+      aria-labelledby="dataModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="dataModalLabel">Data Nama</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h6 id="kodeTestTitle"></h6>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                </tr>
+              </thead>
+              <tbody id="namaTableBody">
+                <!-- Nama-nama akan muncul di sini -->
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button id="cetakPDF" class="btn btn-primary">Cetak PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+      const tableBody = document.getElementById("kodeTestTable");
+      const namaTableBody = document.getElementById("namaTableBody");
+      const kodeTestTitle = document.getElementById("kodeTestTitle");
+      let currentKodeTest = "";
+
+      // Data nama acak per kode test
+      const dataNama = {
+        "FTQ-1": ["Budi", "Ani", "Citra"],
+        "FTQ-2": ["Dedi", "Eka", "Fajar"],
+        "FTQ-3": ["Gina", "Hadi", "Irma"],
+        "FTQ-4": ["Joko", "Kiki", "Lina"],
+        "FTQ-5": ["Mira", "Niko", "Oka"],
+        "FTQ-6": ["Pipit", "Qory", "Rafi"],
+        "FTQ-7": ["Sinta", "Toni", "Umar"],
+        "FTQ-8": ["Vina", "Wawan", "Xena"],
+        "FTQ-9": ["Yani", "Zaki", "Arif"],
+        "FTQ-10": ["Bella", "Chandra", "Dina"],
+      };
+
+      // Generate tabel kode test
+      for (let i = 1; i <= 10; i++) {
+        const row = document.createElement("tr");
+
+        const kodeTestCell = document.createElement("td");
+        const kodeTest = `FTQ-${i}`;
+        kodeTestCell.textContent = kodeTest;
+        row.appendChild(kodeTestCell);
+
+        const periksaCell = document.createElement("td");
+        const periksaButton = document.createElement("button");
+        periksaButton.className = "btn btn-primary btn-sm";
+        periksaButton.textContent = "Periksa";
+        periksaButton.onclick = function () {
+          openModal(kodeTest);
+        };
+        periksaCell.appendChild(periksaButton);
+        row.appendChild(periksaCell);
+
+        tableBody.appendChild(row);
+      }
+
+      // Function untuk buka modal
+      function openModal(kodeTest) {
+        currentKodeTest = kodeTest;
+        kodeTestTitle.innerText = `Kode Test: ${kodeTest}`;
+
+        namaTableBody.innerHTML = "";
+        dataNama[kodeTest].forEach((nama) => {
+          const row = document.createElement("tr");
+          const cell = document.createElement("td");
+          cell.textContent = nama;
+          row.appendChild(cell);
+          namaTableBody.appendChild(row);
+        });
+
+        const myModal = new bootstrap.Modal(
+          document.getElementById("dataModal")
+        );
+        myModal.show();
+      }
+
+      // Function untuk cetak PDF
+      document.getElementById("cetakPDF").onclick = function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Tulis Kode Test di tengah
+        doc.setFontSize(18);
+        doc.text(
+          `Kode Test: ${currentKodeTest}`,
+          doc.internal.pageSize.getWidth() / 2,
+          20,
+          { align: "center" }
+        );
+
+        // Bikin header tabel
+        const tableColumn = ["No", "Nama"];
+        const tableRows = [];
+
+        // Isi tabel
+        dataNama[currentKodeTest].forEach((nama, index) => {
+          tableRows.push([index + 1, nama]);
+        });
+
+        // AutoTable
+        doc.autoTable({
+          head: [tableColumn],
+          body: tableRows,
+          startY: 30,
+          styles: { halign: "center" },
+          headStyles: { fillColor: [37, 43, 97] }, // warna header #252b61
+        });
+
+        doc.save(`${currentKodeTest}.pdf`);
+      };
+    </script>
+  </body>
+</html>

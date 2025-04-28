@@ -1,0 +1,77 @@
+button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+  .disabled {
+    pointer-events: none; /* Menonaktifkan interaksi dengan elemen */
+    opacity: 0.5; /* Menurunkan opasitas untuk menunjukkan bahwa elemen dinonaktifkan */
+}
+.custom-navbar {
+    background-color: #e1e1e1;
+    border-radius: 20px;
+    padding: 0 2rem;
+    height: 80px;
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+  }
+  .custom-navbar .nav-link,
+  .custom-navbar .btn {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  .navbar .nav-link,
+  .navbar .navbar-brand,
+  .navbar a,
+  .navbar .dropdown-toggle {
+    color: #252b61 !important;
+  }
+
+  .navbar i {
+    color: #252b61 !important;
+  }
+  .navbar-toggler {
+  border: none;
+  background: transparent;
+}
+
+.navbar-toggler .hamburger {
+  width: 25px;
+  height: 2px;
+  background-color: #252b61;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.navbar-toggler .hamburger::before,
+.navbar-toggler .hamburger::after {
+  content: "";
+  position: absolute;
+  width: 25px;
+  height: 2px;
+  background-color: #252b61;
+  transition: all 0.3s;
+}
+
+.navbar-toggler .hamburger::before {
+  top: -8px;
+}
+
+.navbar-toggler .hamburger::after {
+  top: 8px;
+}
+
+.navbar-toggler.collapsed .hamburger {
+  background-color: transparent;
+}
+
+.navbar-toggler.collapsed .hamburger::before {
+  transform: rotate(45deg);
+  top: 0;
+}
+
+.navbar-toggler.collapsed .hamburger::after {
+  transform: rotate(-45deg);
+  top: 0;
+}

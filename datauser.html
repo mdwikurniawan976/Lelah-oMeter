@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Table</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"
+    />
+
+    <style>
+      body {
+        background-color: #fff;
+        font-family: "Outfit", sans-serif;
+        padding: 2rem;
+        color: #fff;
+      }
+
+      .table-container {
+        background-color: #f5f5f5;
+        border-radius: 45px;
+        padding: 2rem;
+      }
+
+      .btn-back {
+        background-color: #252b61;
+        border: none;
+        border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn-back img {
+        width: 14px;
+        height: 14px;
+      }
+      .table th {
+        color: #252b61;
+      }
+
+      .table td {
+        color: #252b61;
+      }
+      .pagination .page-link {
+        color: #23235f;
+        border: none;
+        background-color: transparent;
+        font-weight: 500;
+      }
+
+      .pagination .page-item.active .page-link {
+        background-color: #23235f;
+        color: white;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+
+      .pagination .page-item.disabled .page-link {
+        color: #999;
+      }
+
+      .entry-info {
+        color: #23235f;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .pagination {
+        gap: 8px;
+      }
+      .badge-aktif {
+        background-color: #252b61;
+        border-radius: 30px;
+        padding: 0.5em 1em;
+        color: white;
+        font-weight: 600;
+      }
+
+      .search-input {
+        border-radius: 20px;
+        padding-left: 2rem;
+        border: 1px solid #ccc;
+      }
+
+      .search-wrapper {
+        position: relative;
+      }
+      table.dataTable.no-footer {
+        border-bottom: none;
+      }
+
+      table.dataTable thead th,
+      table.dataTable tbody td {
+        border: none !important;
+      }
+
+      /* Hilangkan background putih */
+      table.dataTable {
+        background-color: transparent !important;
+      }
+
+      /* Opsional: Bikin transparan juga bagian luar tabel */
+      .dataTables_wrapper {
+        background-color: transparent !important;
+      }
+
+      /* Hilangkan panah kecil di header kolom */
+      table.dataTable thead .sorting::after,
+      table.dataTable thead .sorting_asc::after,
+      table.dataTable thead .sorting_desc::after {
+        display: none !important;
+      }
+      /* Sembunyikan info "Showing x to x of x entries" dan pagination atas */
+      .dataTables_wrapper .dataTables_info:first-of-type,
+      .dataTables_wrapper .dataTables_paginate:first-of-type {
+        display: none !important;
+      }
+
+      .search-wrapper i {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        color: #f5d900;
+      }
+
+      .form-select,
+      .dataTables_length {
+        margin-bottom: 1rem;
+      }
+
+      @media (max-width: 576px) {
+        .table-container {
+          padding: 1rem;
+        }
+
+        .table th,
+        .table td {
+          font-size: 0.875rem;
+        }
+
+        .badge-aktif {
+          font-size: 0.75rem;
+          padding: 0.3em 0.7em;
+        }
+      }
+      @media (max-width: 576px) {
+        .table-responsive {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .d-flex.justify-content-between.align-items-center.mb-3 {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: flex-start !important;
+        }
+
+        form.d-flex.me-4 {
+          width: 100% !important;
+        }
+
+        #customPagination {
+          flex-wrap: wrap;
+          justify-content: center !important;
+          margin-top: 1rem;
+        }
+
+        #customInfo {
+          text-align: center;
+          width: 100%;
+          margin-top: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="d-flex align-items-center gap-3">
+            <!-- Tombol Back -->
+            <button
+              onclick="window.location.href='home.html'"
+              style="
+                background-color: #23235f;
+                border: none;
+                border-radius: 50%;
+                width: 48px;
+                height: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <img src="back.png" alt="Back" style="width: 20px" />
+            </button>
+
+            <!-- Dropdown -->
+            <select
+              id="customLength"
+              style="
+                background-color: #f5f5f5;
+                border-radius: 999px;
+                height: 48px;
+                padding: 0 20px;
+                color: #23235f;
+                border: none;
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                font-size: 14px;
+              "
+            >
+              <option value="10" selected>Show 10 rows</option>
+              <option value="25">Show 25 rows</option>
+              <option value="50">Show 50 rows</option>
+            </select>
+          </div>
+
+          <form class="d-flex me-4" style="width: 200px">
+            <div
+              class="d-flex align-items-center w-100"
+              style="
+                background-color: #f5f5f5;
+                border-radius: 999px;
+                padding: 5px 10px;
+              "
+            >
+              <img src="Frame 27.png" alt="Search Icon" style="height: 40px" />
+              <input
+                type="text"
+                id="customSearch"
+                class="form-control border-0 ms-2"
+                placeholder="Search Here.."
+                style="
+                  background-color: transparent;
+                  box-shadow: none;
+                  color: #aaa;
+                "
+              />
+            </div>
+          </form>
+        </div>
+
+        <div class="table-container">
+          <div class="table-responsive">
+            <table class="table" id="userTable">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>User</th>
+                  <th>Password</th>
+                  <th>Lokasi</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>OPJuanda</td>
+                  <td>JuandaABC</td>
+                  <td>DPPU Juanda</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>OPBIL</td>
+                  <td>BILABC</td>
+                  <td>DPPU BIL</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>OPBlimbingsari</td>
+                  <td>BlimbingsarABC</td>
+                  <td>DPPU Blimbingsari</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>OPSalahudin</td>
+                  <td>Salahudin123</td>
+                  <td>DPPU Salahudin</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>OPEltari</td>
+                  <td>Eltari123</td>
+                  <td>DPPU Eltari</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>OPRahmansaleh</td>
+                  <td>RahmanABC</td>
+                  <td>DPPU Abdul Rahman Saleh</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td>OP_ITSLPG</td>
+                  <td>ITSLPG123</td>
+                  <td>IT Surabaya LPG</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td>OPMauHau</td>
+                  <td>MauHau123</td>
+                  <td>DPPU Waingapu</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td>OP_ITManggis</td>
+                  <td>ManggisABC</td>
+                  <td>Integrated Terminal Manggis</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>10</td>
+                  <td>OPFransiskus</td>
+                  <td>FransiskusABC</td>
+                  <td>DPPU Fransiskus Seda</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>11</td>
+                  <td>OP_ManggisLPG</td>
+                  <td>LPG123</td>
+                  <td>IT Manggis LPG</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>12</td>
+                  <td>OPAroeboesman</td>
+                  <td>Aroeboesman123</td>
+                  <td>DPPU H.H Aroeboesman</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>13</td>
+                  <td>OP_ITT.Wangi</td>
+                  <td>T.Wangi 123</td>
+                  <td>Integrated Terminal T. Wangi</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>14</td>
+                  <td>OPKomodo</td>
+                  <td>Komodo123</td>
+                  <td>DPPU Komodo</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>15</td>
+                  <td>OPTambolaka</td>
+                  <td>Tambolaka123</td>
+                  <td>DPPU Tambolaka</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>16</td>
+                  <td>OPDhoho</td>
+                  <td>Dhoho123</td>
+                  <td>DPPU Dhoho</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>17</td>
+                  <td>OPGresik</td>
+                  <td>BPGABC</td>
+                  <td>Bitumen Plant Gresik</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>18</td>
+                  <td>OP_ITAmpenan</td>
+                  <td>AmpenanABC</td>
+                  <td>Integrated Terminal Ampenan</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>19</td>
+                  <td>OP_LPGSekotong</td>
+                  <td>LPGSekotong123</td>
+                  <td>Integrated Terminal Ampenan LPG</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>20</td>
+                  <td>OPTuban</td>
+                  <td>FTtuban123</td>
+                  <td>Fuel Terminal Tuban</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>21</td>
+                  <td>OPTenau</td>
+                  <td>Tenau123</td>
+                  <td>Fuel Terminal Tenau</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>22</td>
+                  <td>OPMalang</td>
+                  <td>Malang123</td>
+                  <td>Fuel Terminal Malang</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>23</td>
+                  <td>OPMaumere</td>
+                  <td>Maumere456</td>
+                  <td>Fuel Terminal Maumere</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>24</td>
+                  <td>OPKalabahi</td>
+                  <td>Kalabahi456</td>
+                  <td>Fuel Terminal Kalabahi</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>25</td>
+                  <td>OPCamplong</td>
+                  <td>Camplong456</td>
+                  <td>Fuel Terminal Camplong</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>26</td>
+                  <td>OPRegion</td>
+                  <td>Jatimbalinu</td>
+                  <td>Region Jatim Balinus</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>27</td>
+                  <td>master</td>
+                  <td>region</td>
+                  <td>Region Jatim Balinus</td>
+                  <td>Master</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>28</td>
+                  <td>OPMadiun</td>
+                  <td>Madiun456</td>
+                  <td>Fuel Terminal Madiun</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>29</td>
+                  <td>OPBadas</td>
+                  <td>Badas123</td>
+                  <td>Fuel Terminal Badas</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>30</td>
+                  <td>OPKacabBali</td>
+                  <td>Kacab_Bali</td>
+                  <td>Kantor Cabang Denpasar</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>31</td>
+                  <td>OPSanggaran</td>
+                  <td>Sanggaran456</td>
+                  <td>Fuel Terminal Sanggaran</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>32</td>
+                  <td>OPKacabNTT</td>
+                  <td>Kacab_NTT</td>
+                  <td>Kantor Cabang NTT</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>33</td>
+                  <td>OPBima</td>
+                  <td>Bima123</td>
+                  <td>Fuel Terminal Bima</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>34</td>
+                  <td>OPReo</td>
+                  <td>Reo456</td>
+                  <td>Fuel Terminal Reo</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>35</td>
+                  <td>OPKacabNTB</td>
+                  <td>Kacab_NTB</td>
+                  <td>Kantor Cabang NTB</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>36</td>
+                  <td>OPIswahyudi</td>
+                  <td>Iswahyudi123</td>
+                  <td>DPPU Iswahyudi</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>37</td>
+                  <td>OPEnde</td>
+                  <td>Ende123</td>
+                  <td>Fuel Terminal Ende</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>38</td>
+                  <td>OPWaingapu</td>
+                  <td>Waingapu123</td>
+                  <td>Fuel Terminal Waingapu</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>39</td>
+                  <td>OPKacabKdr</td>
+                  <td>Kacab_Kdr</td>
+                  <td>Kantor Cabang Kediri</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>40</td>
+                  <td>OP_ITSBandaran</td>
+                  <td>ITSBandaran123</td>
+                  <td>Integrated Terminal Surabaya Bandaran</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>41</td>
+                  <td>OPAtapupu</td>
+                  <td>Atapupu456</td>
+                  <td>Fuel Terminal Atapupu</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>42</td>
+                  <td>OPNgurahrai</td>
+                  <td>Ngurah123</td>
+                  <td>DPPU Ngurah Rai</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+                <tr>
+                  <td>43</td>
+                  <td>OP_ITSPerak</td>
+                  <td>ITSPerak123</td>
+                  <td>IT Surabaya Perak</td>
+                  <td>Operator</td>
+                  <td><span class="badge-aktif">AKTIF</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div id="customInfo" class="entry-info"></div>
+          <div
+            id="customPagination"
+            class="pagination pagination-sm mb-0 d-flex align-items-center"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+   
+    <!-- Bootstrap Icons (for search icon) -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+      let table;
+
+      $(document).ready(function () {
+        table = $("#userTable").DataTable({
+          pageLength: 10,
+          lengthChange: false,
+          searching: true,
+          paging: true,
+          info: false,
+          dom: "rtip",
+        });
+
+        // Custom draw
+        table
+          .on("draw", function () {
+            const info = table.page.info();
+            $("#customInfo").html(
+              `Showing ${info.start + 1} to ${info.end} of ${
+                info.recordsTotal
+              } entries`
+            );
+
+            let paginationHtml = "";
+            for (let i = 0; i < info.pages; i++) {
+              paginationHtml += `<li class="page-item ${
+                i === info.page ? "active" : ""
+              }">
+              <a class="page-link" href="#">${i + 1}</a></li>`;
+            }
+
+            $("#customPagination").html(`
+            <ul class="pagination pagination-sm mb-0 d-flex align-items-center">
+              <li class="page-item ${info.page === 0 ? "disabled" : ""}">
+                <a class="page-link" href="#" id="prevPage">Previous</a>
+              </li>
+              ${paginationHtml}
+              <li class="page-item ${
+                info.page === info.pages - 1 ? "disabled" : ""
+              }">
+                <a class="page-link" href="#" id="nextPage">Next</a>
+              </li>
+            </ul>
+          `);
+          })
+          .draw();
+
+        // Custom search
+        $("#customSearch").on("input", function () {
+          table.search(this.value).draw();
+        });
+
+        // Custom change page length
+        $("#customLength").on("change", function () {
+          const val = parseInt($(this).val());
+          table.page.len(val).draw();
+        });
+
+        // Custom pagination click
+        $(document).on("click", ".pagination .page-link", function (e) {
+          e.preventDefault();
+          const text = $(this).text();
+          if (text === "Previous") {
+            table.page("previous").draw("page");
+          } else if (text === "Next") {
+            table.page("next").draw("page");
+          } else {
+            table.page(parseInt(text) - 1).draw("page");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

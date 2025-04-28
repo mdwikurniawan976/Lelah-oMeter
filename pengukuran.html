@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consult</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    @media (max-width: 576px) {
+      .title { font-size: 1rem; }
+      .btn-back { width: 36px; height: 36px; }
+      .btn-back img { width: 12px; height: 12px; }
+      .chart-wrapper { margin-bottom: 2rem; }
+    }
+    .btn-back {
+      background-color: #252b61;
+      border: none;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-back img { width: 14px; height: 14px; }
+    .title {
+      font-family: "Outfit", sans-serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: #252b61;
+      margin-left: 10px;
+    }
+    .btn-primary {
+      background-color: #252b61;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #1b204d;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn-back" onclick="window.location.href='home.html'">
+      <img src="back.png" alt="Back" />
+    </button>
+    <div class="title">Consult</div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+
+      <!-- Form Card -->
+      <div class="card" id="form-card">
+        <div class="card-body">
+          <h4 class="card-title mb-4 text-center">Form Pengukuran</h4>
+          <form id="pengukuran-form">
+            <div class="mb-3">
+              <input type="text" class="form-control" name="kode-test" id="kode-test" placeholder="Kode Test" readonly />
+            </div>
+            
+
+            <div class="mb-3">
+              <select class="form-control" name="jabatan" required>
+                <option value="" disabled selected>Pilih Jabatan</option>
+                <option value="Kontraktor">Kontraktor</option>
+                <option value="AMT 1">AMT 1</option>
+                <option value="AMT 2">AMT 2</option>
+                <option value="Pekerja">Pekerja</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <input type="text" class="form-control" name="pemeriksa" placeholder="Pemeriksa" required />
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Menu Button -->
+      <div class="card mt-4">
+        <div class="card-body text-center">
+          <h5>Menu Pengukuran</h5>
+          <div class="d-grid gap-2 mt-3">
+            <button class="btn btn-primary" onclick="mulaiPengukuran('Lelah', 3)">Lelah</button>
+            <button class="btn btn-primary" onclick="mulaiPengukuran('Kesehatan', 5)">Kesehatan</button>
+            <button class="btn btn-primary" onclick="mulaiPengukuran('Alkohol', 5)">Alkohol</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timer Card -->
+      <div class="card mt-4 d-none" id="pengukuran">
+        <div class="card-body text-center">
+          <h5 id="menu-title"></h5>
+          <div class="mb-3">
+            Timer: <span id="timer" class="text-primary fw-bold"></span> detik
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-success" onclick="startTimer()">Start</button>
+            <button class="btn btn-warning" onclick="resetTimer()">Reset</button>
+            <button class="btn btn-danger" onclick="doneTimer()">Done</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+   function generateKodeTest() {
+    const today = new Date();
+    const yyyyMMdd = today.getFullYear().toString() + 
+      String(today.getMonth() + 1).padStart(2, '0') + 
+      String(today.getDate()).padStart(2, '0');
+    
+    const randomStr = Math.random().toString(36).substring(2, 7).toUpperCase();
+    return `TEST-${yyyyMMdd}-${randomStr}`;
+  }
+
+  // Pas halaman dibuka, set kode test otomatis
+  window.onload = function() {
+    document.getElementById('kode-test').value = generateKodeTest();
+  };
+  let timer;
+  let detikAwal = 0;
+  let waktuMulai = "";
+  let menuSekarang = "";
+
+  function mulaiPengukuran(menu, detik) {
+    menuSekarang = menu;
+    detikAwal = detik;
+    document.getElementById('timer').innerText = detik;
+    document.getElementById('menu-title').innerText = menu;
+    document.getElementById('pengukuran').classList.remove('d-none');
+  }
+
+  function startTimer() {
+    waktuMulai = new Date().toISOString();
+    let detik = detikAwal;
+
+    timer = setInterval(() => {
+      document.getElementById('timer').innerText = detik;
+      if (detik <= 0) clearInterval(timer);
+      detik--;
+    }, 1000);
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    document.getElementById('timer').innerText = detikAwal;
+  }
+
+  function doneTimer() {
+    clearInterval(timer);
+
+    const form = document.getElementById("pengukuran-form");
+    const formData = new FormData(form);
+    const data = {
+      kode_test: formData.get("kode-test"),
+      jabatan: formData.get("jabatan"),
+      pemeriksa: formData.get("pemeriksa"),
+      menu: menuSekarang,
+      waktu_mulai: waktuMulai,
+      waktu_selesai: new Date().toISOString(),
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbwW_5eH8mOeE10D1AApydvSpOTlD4cq0EL2VIjVKsyLstO3hK8m0J0ogWkGHD2QQzoF/exec", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }).then((res) => {
+      alert("Data " + menuSekarang + " tersimpan di Google Sheet!");
+
+      // Reset tampilan
+      form.reset();
+      document.getElementById('pengukuran').classList.add('d-none');
+      document.getElementById('form-card').classList.remove('d-none');
+      document.getElementById('timer').innerText = "";
+      document.getElementById('menu-title').innerText = "";
+    });
+  }
+</script>
+
+</body>
+</html>

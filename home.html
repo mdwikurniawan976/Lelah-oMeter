@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Website Lelah O-Meter</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      .display-1 {
+        font-size: 8rem;
+        font-weight: 800;
+        color: #c6defd;
+      }
+      .display-title {
+        font-size: 6rem; /* Lebih besar */
+        font-weight: 800;
+        color: #c6defd;
+        line-height: 1.1;
+      }
+      .display-4 {
+        color: #c6defd;
+      }
+
+      body {
+        font-family: "Outfit", sans-serif;
+        background-color: #f5f5f5;
+      }
+      .main-banner {
+        background-color: #2c2f87;
+        color: white;
+        border-radius: 25px;
+        padding: 0rem 3rem 3rem 3rem;
+        text-align: center;
+        position: relative;
+      }
+      .mascot-img {
+        max-height: 320px;
+        max-width: 100%;
+        width: auto;
+        object-fit: contain;
+      }
+
+      .icon-text {
+        font-size: 1rem;
+        margin-bottom: 0;
+        margin-left: 0.5rem;
+      }
+
+      .health-text {
+        font-size: 14px;
+        color: #fff;
+        text-align: left;
+      }
+
+      .btn-custom {
+        background-color: #e8c1d0;
+        color: black;
+        border: none;
+        height: 50px;
+        font-weight: 600;
+        padding: 0px 60px;
+      }
+      
+      .btn-custom:hover {
+        background-color: #d8b6c3;
+      }
+      
+      .circle-btn {
+        background-color: #e8c1d0;
+        width: 50px;
+        height: 50px;
+        border: none;
+      }
+      
+      .circle-btn:hover {
+        background-color: #d8b6c3;
+      }
+
+      .icon-circle {
+        background-color: #f1c8d4;
+        border-radius: 50%;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+      }
+
+      .mascot-img {
+        max-height: 400px; /* Diperbesar dari sebelumnya */
+        width: auto;
+      }
+
+      @media (max-width: 768px) {
+        .display-title {
+          font-size: 3.5rem;
+        }
+
+        .mascot-img {
+          max-height: 220px;
+        }
+
+        .health-text {
+          text-align: center;
+        }
+
+        .justify-content-between {
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
+      .card-custom {
+        border-radius: 20px;
+        padding: 1.5rem;
+        color: #333;
+        height: 100%;
+      }
+      .custom-imgg {
+        width: 220px;
+        height: auto;
+        align-self: flex-end; /* Geser gambar ke kanan dalam flex column */
+        margin-bottom: 2rem;
+        margin-right: rem; /* Tambahan kecil biar gak mentok kanan */
+      }
+
+      .arrow-icon {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        font-size: 34px;
+        color: #252b61;
+      }
+      .card-customm {
+        height: 400px;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .card-customm h5,
+      .card-custom h5 {
+        color: #252b61;
+        font-size: 1.2rem;
+      }
+
+      .card-customm p,
+      .card-custom p {
+        color: #252b61;
+        font-size: 0.95rem;
+      }
+
+      .icon-desc {
+        font-size: 14px;
+        color: #555;
+      }
+      .maskot {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .icons {
+        padding-bottom: 80px;
+      }
+      .custom-navbar {
+        background-color: #e1e1e1;
+        border-radius: 20px;
+        padding: 0 2rem;
+        height: 80px;
+        display: flex;
+        margin-top: 20px;
+        align-items: center;
+      }
+      .custom-navbar .nav-link,
+      .custom-navbar .btn {
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+      .navbar .nav-link,
+      .navbar .navbar-brand,
+      .navbar a,
+      .navbar .dropdown-toggle {
+        color: #252b61 !important;
+      }
+
+      .navbar i {
+        color: #252b61 !important;
+      }
+      .navbar-toggler {
+      border: none;
+      background: transparent;
+    }
+
+    .navbar-toggler .hamburger {
+      width: 25px;
+      height: 2px;
+      background-color: #252b61;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .navbar-toggler .hamburger::before,
+    .navbar-toggler .hamburger::after {
+      content: "";
+      position: absolute;
+      width: 25px;
+      height: 2px;
+      background-color: #252b61;
+      transition: all 0.3s;
+    }
+
+    .navbar-toggler .hamburger::before {
+      top: -8px;
+    }
+
+    .navbar-toggler .hamburger::after {
+      top: 8px;
+    }
+
+    .navbar-toggler.collapsed .hamburger {
+      background-color: transparent;
+    }
+
+    .navbar-toggler.collapsed .hamburger::before {
+      transform: rotate(45deg);
+      top: 0;
+    }
+
+    .navbar-toggler.collapsed .hamburger::after {
+      transform: rotate(-45deg);
+      top: 0;
+    }
+
+    @media (max-width: 991.98px) {
+      .custom-navbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 1.5rem;
+      }
+
+      .navbar-collapse {
+        margin-top: 1rem;
+      }
+    }
+    .scrollable-dropdown {
+    max-height: 300px; /* Ubah sesuai kebutuhan */
+    overflow-y: auto;
+  }
+  .disabled {
+    pointer-events: none; /* Menonaktifkan interaksi dengan elemen */
+    opacity: 0.5; /* Menurunkan opasitas untuk menunjukkan bahwa elemen dinonaktifkan */
+}
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="container">
+      <nav class="navbar navbar-expand-lg custom-navbar">
+        <div class="container-fluid p-0">
+          <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+            Medcen
+            <span class="vr mx-3 d-none d-lg-block"></span>
+          </a>
+
+          <!-- Custom Hamburger Toggle -->
+          <button
+            class="navbar-toggler ms-auto"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="hamburger"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form
+              class="d-flex flex-grow-1 my-2 my-lg-0"
+              style="max-width: 500px"
+            >
+              <div class="input-group w-100">
+                <span
+                  class="input-group-text bg-white rounded-start-pill border-end-0"
+                >
+                  <img src="Frame 27.png" alt="Search" style="height: 40px" />
+                </span>
+                <input
+                  class="form-control rounded-end-pill border-start-0"
+                  type="search"
+                  placeholder="Search Here.."
+                  aria-label="Search"
+                />
+              </div>
+            </form>
+
+            <div
+              class="ms-auto d-flex flex-column flex-lg-row gap-3 mt-3 mt-lg-0"
+            >
+              <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="datauser.html"
+                  >Data User</a
+                >
+              </div>
+              <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Data Test</a>
+                <ul class="dropdown-menu scrollable-dropdown">
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-juanda">DPPU Juanda</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-bil">DPPU BIL</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-blimbingsari">DPPU Blimbingsari</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-salahudin">DPPU Salahudin</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-eltari">DPPU Eltari</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-abdul-rahman-saleh">DPPU Abdul Rahman Saleh</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=it-surabaya-lpg">IT Surabaya LPG</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-waingapu">DPPU Waingapu</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=integrated-terminal-manggis">Integrated Terminal Manggis</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-fransiskus-seda">DPPU Fransiskus Seda</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=it-manggis-lpg">IT Manggis LPG</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-hh-aroeboesman">DPPU H.H Aroeboesman</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=integrated-terminal-t-wangi">Integrated Terminal T. Wangi</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-komodo">DPPU Komodo</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-tambolaka">DPPU Tambolaka</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-dhoho">DPPU Dhoho</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=bitumen-plant-gresik">Bitumen Plant Gresik</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=integrated-terminal-ampenan">Integrated Terminal Ampenan</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=integrated-terminal-ampenan-lpg">Integrated Terminal Ampenan LPG</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-tuban">Fuel Terminal Tuban</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-tenau">Fuel Terminal Tenau</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-malang">Fuel Terminal Malang</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-maumere">Fuel Terminal Maumere</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-kalabahi">Fuel Terminal Kalabahi</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-camplong">Fuel Terminal Camplong</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=region-jatim-balinus">Region Jatim Balinus</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-madiun">Fuel Terminal Madiun</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-badas">Fuel Terminal Badas</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=kantor-cabang-denpasar">Kantor Cabang Denpasar</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-sanggaran">Fuel Terminal Sanggaran</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=kantor-cabang-ntt">Kantor Cabang NTT</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-bima">Fuel Terminal Bima</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-reo">Fuel Terminal Reo</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=kantor-cabang-ntb">Kantor Cabang NTB</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-iswahyudi">DPPU Iswahyudi</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-ende">Fuel Terminal Ende</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-waingapu">Fuel Terminal Waingapu</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=kantor-cabang-kediri">Kantor Cabang Kediri</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=integrated-terminal-surabaya-bandaran">Integrated Terminal Surabaya Bandaran</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=fuel-terminal-atapupu">Fuel Terminal Atapupu</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=dppu-ngurah-rai">DPPU Ngurah Rai</a></li>
+                  <li><a class="dropdown-item" href="data-test.html?lokasi=it-surabaya-perak">IT Surabaya Perak</a></li>
+                </ul>
+              </div>
+              
+
+              <div class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="monitor.html"
+                  data-bs-toggle=""
+                  >Monitoring</a
+                >
+                <!--   <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Monitoring 1</a></li>
+                    </ul> -->
+              </div>
+              <!-- Login Button -->
+              <a href="kalibrasi.html" class="nav-link dropdown-toggle" >Kalibrasi</a>
+              <a href="history.html" class="nav-link dropdown-toggle" >History</a>
+              <!-- Logout Button -->
+              <li class="nav-item" id="loginItem">
+                <a class="nav-link" href="index.html" id="loginButton">Login</a>
+              </li>
+              <li class="nav-item" id="logoutItem" style="display: none">
+                <a class="nav-link" href="#" id="logoutButton">Logout</a>
+              </li>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="container my-3 hero-section">
+        <div class="main-banner" data-aos="fade-up">
+          <h1 class="display-1 fw-bold">Health Mot-Ra</h1>
+  
+          <div class="row d-flex align-items-center justify-content-center my-4 icons">
+            <!-- Ikon kiri -->
+            <div class="col-12 col-md-5 d-flex justify-content-center">
+              <div class="d-flex align-items-center">
+                <div class="icon-circle">
+                  <img
+                    src="Frame 36.png"
+                    alt="Reduce Disease"
+                    class="img-fluid"
+                    style="max-height: 24px"
+                  />
+                </div>
+                <p class="icon-text text-white ms-2">Reduce Disease</p>
+              </div>
+            </div>
+            
+            <!-- Ikon kanan -->
+            <div class="col-12 col-md-5 d-flex justify-content-center">
+              <div class="d-flex align-items-center">
+                <div class="icon-circle" style="background-color: #b5e5c9">
+                  <img
+                  src="Frame 37.png"
+                  alt="No More Medications"
+                  class="img-fluid"
+                  />
+                </div>
+                <p class="icon-text text-white ms-2">No More Medications</p>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Paragraf & tombol -->
+          <div
+            class="d-flex flex-column flex-md-row justify-content-between align-items-end text-center text-md-start"
+          >
+            <p class="mb-3 mb-md-0 health-text">
+              HAVE REGULAR HEALTH CHECKS FOR <br />
+              EARLY DETECTION OF DISEASE.
+            </p>
+  
+            <div class="d-flex align-items-center gap-3">
+              <button class="btn btn-custom rounded-pill" onclick="window.location.href='pengukuran.html'">
+                Let's Consult
+              </button>
+  
+              <button
+                class="btn circle-btn rounded-circle d-flex justify-content-center align-items-center shadow-sm"
+              >
+                <i class="bi bi-chevron-down" style="color: black"></i>
+              </button>
+            </div>
+          </div>
+  
+          <!-- Maskot -->
+          <div class="d-flex justify-content-center maskot">
+            <div style="max-width: 320px; width: 100%">
+              <img src="bghero.png" alt="Mascot" class="img-fluid mascot-img" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Feature Cards -->
+    <div class="container mb-5">
+      <div class="row g-4">
+        <!-- 4 Card Pertama -->
+        <div class="col-md-3" data-aos="fade-right">
+          <div
+            class="card card-customm rounded-4"
+            style="background-color: #a3dac2"
+          >
+            <div>
+              <h5 class="fw-bold">Heart Rate</h5>
+              <p class="icon-desc">Stable Heart Rate, Safe Journey.</p>
+            </div>
+            <img
+              src="Social Media Lots Of Followers Post Engagement.png"
+              class="custom-imgg"
+              alt=""
+            />
+            <a href="checkheart.html">
+              <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-3" data-aos="fade-left">
+          <div
+            class="card card-customm rounded-4"
+            style="background-color: #f0da69"
+          >
+            <h5 class="fw-bold" style="color: #252b61">Blood Sugar</h5>
+            <p class="icon-desc" style="color: #252b61">
+              Normal Blood Sugar, Maximum Energy.
+            </p>
+            <img src="Empty Inbox 1.png" class="custom-imgg" alt="" />
+            <a href="checkyoursugar.html">
+              <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-3" data-aos="fade-right">
+          <div
+            class="card card-customm rounded-4"
+            style="background-color: #e7c2d4"
+          >
+            <h5 class="fw-bold">Cholesterol Level</h5>
+            <p class="icon-desc">
+              Controlled Cholesterol, Work Without Obstacles.
+            </p>
+            <img
+              src="Business Startup Character Black Man.png"
+              class="custom-imgg"
+              alt=""
+            />
+            <a href="checkcolesterollevel.html">
+              <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-3" data-aos="fade-left">
+          <div class="card card-customm bg-primary-subtle rounded-4">
+            <h5 style="font-weight: bold">Alcohol Level</h5>
+            <p class="icon-desc">Clean Breath, Check Alcohol Before Going.</p>
+            <img src="Business Business Trip.png" class="custom-imgg" alt="" />
+            <a href="checkalcohollevel.html">
+              <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- 2 Card Tengah di Baris Bawah -->
+        <div class="col-md-3 offset-md-3" data-aos="fade-right">
+          <div
+            class="card card-customm rounded-4"
+            style="background-color: #d2665a"
+          >
+            <h5 style="font-weight: 600; color: #252b61">Temperature</h5>
+            <p class="icon-desc" style="color: #252b61">
+              Optimal body temperature, ready for duty.
+            </p>
+            <img src="celsius 1.png".png" class="custom-imgg" alt="" />
+            <a href="checktemperature.html">
+              <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-3" data-aos="fade-left">
+          <div
+            class="card card-customm rounded-4"
+            style="background-color: #fdab9e"
+          >
+            <h5 style="font-weight: 600; color: #252b61">Oxygen Saturation</h5>
+            <p class="icon-desc" style="color: #252b61">
+              Sufficient oxygen saturation, focus maintained.
+            </p>
+            <img src="oxygen-saturation 1.png" class="custom-imgg" alt="" />
+            <a href="oxgensaturation.html">
+              <i class="bi bi-arrow-right-circle-fill arrow-icon"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <footer style="background-color: #2e2e2e; color: white; text-align: center; padding: 15px 0; ">
+      <p>&copy; Copyright 2025</p>
+      <p>
+        <span style="color: orange;">◆</span>
+        HSSE Regional Jatimbalinus - PT Pertamina Patra Niaga
+        <span style="color: orange;">◆</span>
+      </p>
+    </footer>
+    
+    
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        duration: 1000, // Durasi animasi
+        once: true, // Animasi hanya muncul sekali saat scroll
+      });
+    </script>
+    <script>
+        // Toggle class for hamburger animation
+        const toggler = document.querySelector(".navbar-toggler");
+        toggler.addEventListener("click", () => {
+          toggler.classList.toggle("collapsed");
+        });
+      </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

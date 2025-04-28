@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Akun</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+      background-color: #007bff;
+      color: white;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+      width: 100%;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card" style="width: 100%; max-width: 400px;">
+      <div class="card-header">
+        <h5>Daftar Akun</h5>
+      </div>
+      <div class="card-body">
+        <form id="registerForm">
+          <div class="mb-3">
+            <label for="fullName" class="form-label">Nama Lengkap</label>
+            <input type="text" class="form-control" id="fullName" placeholder="Masukkan Nama Lengkap" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Masukkan Email" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Masukkan Password" required>
+          </div>
+          <div class="mb-3">
+            <label for="location" class="form-label">Lokasi</label>
+            <select class="form-select" id="location" required>
+              <option value="" disabled selected>Pilih Lokasi</option>
+              <option value="IT T.Wangi">IT T.Wangi</option>
+              <option value="FT Malang">FT Malang</option>
+              <option value="FT Madiun">FT Madiun</option>
+              <option value="IT Surabaya Perak">IT Surabaya Perak</option>
+              <option value="IT Surabaya LPG">IT Surabaya LPG</option>
+              <option value="DPPU Juanda">DPPU Juanda</option>
+              <option value="DPPU BIL">DPPU BIL</option>
+              <option value="DPPU Blimbingsari">DPPU Blimbingsari</option>
+              <option value="DPPU Salahudin">DPPU Salahudin</option>
+              <option value="DPPU El Tari">DPPU El Tari</option>
+              <option value="DPPU Abdul Rahman Saleh">DPPU Abdul Rahman Saleh</option>
+              <option value="DPPU H.H Aroepoetsoman">DPPU H.H Aroepoetsoman</option>
+              <option value="DPPU Waingapu">DPPU Waingapu</option>
+              <option value="DPPU Fransiskus Seda">DPPU Fransiskus Seda</option>
+              <option value="IT Manggis">IT Manggis</option>
+              <option value="IT Manggis LPG">IT Manggis LPG</option>
+              <option value="DPPU Komodo">DPPU Komodo</option>
+              <option value="DPPU Tambolaka">DPPU Tambolaka</option>
+              <option value="DPPU Dhoho">DPPU Dhoho</option>
+              <option value="Bitumen Plant Gresik">Bitumen Plant Gresik</option>
+              <option value="IT Ampenan">IT Ampenan</option>
+              <option value="IT Ampenan LPG">IT Ampenan LPG</option>
+              <option value="FT Tuban">FT Tuban</option>
+              <option value="FT Tenau">FT Tenau</option>
+              <option value="FT Maumere">FT Maumere</option>
+              <option value="FT Kalabahi">FT Kalabahi</option>
+              <option value="FT Camplong">FT Camplong</option>
+              <option value="FT Badas">FT Badas</option>
+              <option value="FT Sanggaran">FT Sanggaran</option>
+              <option value="Kcp Denpasar">Kcp Denpasar</option>
+              <option value="Kcp NTT">Kcp NTT</option>
+              <option value="FT Bima">FT Bima</option>
+              <option value="FT Reo">FT Reo</option>
+              <option value="Kcp NTB">Kcp NTB</option>
+              <option value="DPPU Iswahyudi">DPPU Iswahyudi</option>
+              <option value="DPPU Ende">DPPU Ende</option>
+              <option value="FT Waingapu">FT Waingapu</option>
+              <option value="Kcp Kediri">Kcp Kediri</option>
+              <option value="IT Surabaya Bandaran">IT Surabaya Bandaran</option>
+              <option value="FT Atapupu">FT Atapupu</option>
+              <option value="DPPU Ngurah Rai">DPPU Ngurah Rai</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Daftar</button>
+        </form>
+        <div class="text-center mt-3">
+          <span>Sudah punya akun? </span><a href="index.html">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="register.js"></script>
+</body>
+</html>

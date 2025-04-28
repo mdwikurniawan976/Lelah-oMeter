@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oxygen Saturation</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        background-color: #fff;
+        font-family: "Outfit", sans-serif;
+        padding: 2rem;
+      }
+      canvas {
+        width: 100% !important;
+        height: auto !important;
+      }
+      @media (max-width: 576px) {
+        .title {
+          font-size: 1rem;
+        }
+
+        .btn-back {
+          width: 36px;
+          height: 36px;
+        }
+
+        .btn-back img {
+          width: 12px;
+          height: 12px;
+        }
+
+        .chart-wrapper {
+          margin-bottom: 2rem;
+        }
+      }
+      .btn-back {
+        background-color: #252b61;
+        border: none;
+        border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn-back img {
+        width: 14px;
+        height: 14px;
+      }
+
+      .title {
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
+        font-size: 1.25rem;
+        color: #252b61;
+        margin-left: 10px;
+      }
+      .btn-primary {
+        background-color: #252b61;
+        border: none;
+      }
+
+      .btn-primary:hover {
+        background-color: #1b204d;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn-back" onclick="window.location.href='home.html'">
+              <img src="back.png" alt="Back" />
+            </button>
+            <div class="title">Monitoring</div>
+          </div>
+
+          <div class="d-flex justify-content-end align-items-center gap-2 mb-3">
+            <select
+              id="tahunSelect"
+              class="form-select form-select-sm w-auto"
+            ></select>
+
+            <select id="exportFormat" class="form-select form-select-sm w-auto">
+              <option value="pdf">Export ke PDF</option>
+              <option value="excel">Export ke Excel</option>
+              <option value="excel-image">Export Chart dengan Gambar</option>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="exportData()">
+              Cetak
+            </button>
+          </div>
+
+          <div class="chart-wrapper mt-5">
+            <canvas id="monthlyChart" height="300"></canvas>
+          </div>
+
+          <div class="chart-wrapper">
+            <canvas id="perHari" height="400"></canvas>
+          </div>
+          <div class="chart-wrapper mt-5">
+            <canvas id="weeklyChart" height="300"></canvas>
+          </div>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+          <script>
+            const tahunSelect = document.getElementById("tahunSelect");
+            const tahunSekarang = new Date().getFullYear();
+
+            for (let tahun = 2025; tahun <= 2030; tahun++) {
+              const option = document.createElement("option");
+              option.value = tahun;
+              option.textContent = tahun;
+              if (tahun > tahunSekarang) option.disabled = true;
+              tahunSelect.appendChild(option);
+            }
+
+            const monthlyCtx = document
+              .getElementById("monthlyChart")
+              .getContext("2d");
+            new Chart(monthlyCtx, {
+              type: "bar",
+              data: {
+                labels: [
+                  "Jan",
+                  "Feb",
+                  "Mar",
+                  "Apr",
+                  "Mei",
+                  "Jun",
+                  "Jul",
+                  "Aug",
+                  "Sep",
+                  "Okt",
+                  "Nov",
+                  "Des",
+                ],
+                datasets: [
+                  {
+                    label: "Ringan",
+                    data: [1, 1, 1, 1, 1, 1, 1, 1, 200, 300, 400, 100],
+                    backgroundColor: "yellow",
+                  },
+                  {
+                    label: "Sedang",
+                    data: [2, 1, 1, 1, 1, 1, 1, 1, 300, 400, 500, 200],
+                    backgroundColor: "green",
+                  },
+                  {
+                    label: "Berat",
+                    data: [5, 6, 5, 6, 5, 6, 5, 6, 5000, 7000, 8000, 3000],
+                    backgroundColor: "red",
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                  },
+                },
+                plugins: {
+                  datalabels: {
+                    anchor: "end",
+                    align: "top",
+                    formatter: (value) => value,
+                    font: {
+                      weight: "bold",
+                    },
+                    color: "black",
+                  },
+                  tooltip: {
+                    enabled: true,
+                  },
+                  legend: {
+                    display: true,
+                  },
+                },
+              },
+              plugins: [ChartDataLabels], // Ini WAJIB ditambahkan
+            });
+
+            const weeklyCtx = document
+              .getElementById("weeklyChart")
+              .getContext("2d");
+
+            new Chart(weeklyCtx, {
+              type: "bar",
+              data: {
+                labels: [
+                  "Senin",
+                  "Selasa",
+                  "Rabu",
+                  "Kamis",
+                  "Jumat",
+                  "Sabtu",
+                  "Minggu",
+                ],
+                datasets: [
+                  {
+                    label: "Ringan",
+                    data: [80, 70, 85, 80, 100, 40, 30],
+                    backgroundColor: "yellow",
+                  },
+                  {
+                    label: "Sedang",
+                    data: [120, 90, 100, 95, 130, 60, 40],
+                    backgroundColor: "green",
+                  },
+                  {
+                    label: "Berat",
+                    data: [20, 15, 18, 17, 22, 10, 5],
+                    backgroundColor: "red",
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                  },
+                },
+                plugins: {
+                  datalabels: {
+                    anchor: "end",
+                    align: "top",
+                    formatter: (value) => value,
+                    font: {
+                      weight: "bold",
+                    },
+                    color: "black",
+                  },
+                  tooltip: {
+                    enabled: true,
+                  },
+                  legend: {
+                    display: true,
+                  },
+                },
+              },
+              plugins: [ChartDataLabels], // Ini WAJIB ditambahkan
+            });
+            const ctxx = document.getElementById("perHari").getContext("2d");
+
+            new Chart(ctxx, {
+              type: "bar",
+              data: {
+                labels: [
+                  "IT T.Wangi",
+                  "FT Malang",
+                  "FT Madiun",
+                  "IT Surabaya Perak",
+                  "IT Surabaya LPG",
+                  "DPPU Juanda",
+                  "DPPU BIL",
+                  "DPPU Blimbingsari",
+                  "DPPU Salahudin",
+                  "DPPU El Tari",
+                  "DPPU Abdul Rahman Saleh",
+                  "DPPU H.H Aroepoetsoman",
+                  "DPPU Waingapu",
+                  "DPPU Fransiskus Seda",
+                  "IT Manggis",
+                  "IT Manggis LPG",
+                  "DPPU Komodo",
+                  "DPPU Tambolaka",
+                  "DPPU Dhoho",
+                  "Bitumen Plant Gresik",
+                  "IT Ampenan",
+                  "IT Ampenan LPG",
+                  "FT Tuban",
+                  "FT Tenau",
+                  "FT Maumere",
+                  "FT Kalabahi",
+                  "FT Camplong",
+                  "FT Badas",
+                  "FT Sanggaran",
+                  "Kcp Denpasar",
+                  "Kcp NTT",
+                  "FT Bima",
+                  "FT Reo",
+                  "Kcp NTB",
+                  "DPPU Iswahyudi",
+                  "DPPU Ende",
+                  "FT Waingapu",
+                  "Kcp Kediri",
+                  "IT Surabaya Bandaran",
+                  "FT Atapupu",
+                  "DPPU Ngurah Rai",
+                ],
+                datasets: [
+                  {
+                    label: "Ringan",
+                    data: [
+                      200, 642, 400, 100, 100, 150, 80, 70, 100, 150, 90, 50,
+                      40, 30, 10, 10, 15, 20, 25, 5, 2, 2, 5, 5, 10, 15, 12, 5,
+                      8, 2, 5, 5, 2, 2, 2, 2, 5, 5, 5, 5, 5,
+                    ],
+                    backgroundColor: "yellow",
+                  },
+                  {
+                    label: "Sedang",
+                    data: [
+                      500, 20986, 1500, 300, 200, 400, 150, 100, 300, 500, 200,
+                      100, 80, 50, 20, 20, 30, 50, 60, 10, 5, 5, 15, 10, 20, 30,
+                      25, 10, 15, 5, 10, 10, 5, 5, 5, 5, 10, 10, 10, 10, 10,
+                    ],
+                    backgroundColor: "green",
+                  },
+                  {
+                    label: "Berat",
+                    data: [
+                      100, 308, 200, 80, 70, 120, 60, 50, 80, 100, 70, 40, 30,
+                      20, 10, 10, 10, 15, 20, 2, 1, 1, 3, 2, 5, 10, 8, 2, 3, 1,
+                      2, 2, 1, 1, 1, 1, 3, 3, 3, 3, 3,
+                    ],
+                    backgroundColor: "red",
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: "x",
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: 30000,
+                  },
+                  x: {
+                    ticks: {
+                      maxRotation: 45,
+                      minRotation: 45,
+                      autoSkip: false,
+                    },
+                  },
+                },
+                plugins: {
+                  tooltip: {
+                    callbacks: {
+                      label: function (context) {
+                        const labelMap = {
+                          Ringan: "Ringan",
+                          Sedang: "Sedang",
+                          Berat: "Berat",
+                        };
+                        const label =
+                          labelMap[context.dataset.label] ||
+                          context.dataset.label;
+                        return `${label}: ${context.formattedValue}`;
+                      },
+                      title: function (context) {
+                        return `${context[0].label}`;
+                      },
+                    },
+                  },
+                  legend: {
+                    display: true,
+                  },
+                },
+              },
+            });
+            function getChartData(chart) {
+              const headers = ["Label"];
+              const rows = [];
+
+              // Ambil label dataset (e.g., Start, Done, Reset)
+              chart.data.datasets.forEach((dataset) => {
+                headers.push(dataset.label);
+              });
+
+              // Loop tiap label sumbu X (e.g., Jan, Feb, dll)
+              chart.data.labels.forEach((label, index) => {
+                const row = [label];
+                chart.data.datasets.forEach((dataset) => {
+                  row.push(dataset.data[index]);
+                });
+                rows.push(row);
+              });
+
+              return { headers, rows };
+            }
+            async function exportData() {
+              const format = document.getElementById("exportFormat").value;
+
+              const monthlyChart = Chart.getChart("monthlyChart");
+              const weeklyChart = Chart.getChart("weeklyChart");
+              const perHariChart = Chart.getChart("perHari");
+
+              const monthlyData = getChartData(monthlyChart);
+              const weeklyData = getChartData(weeklyChart);
+              const perHariData = getChartData(perHariChart);
+
+              if (format === "pdf") {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                let y = 10;
+                [monthlyData, weeklyData, perHariData].forEach(
+                  (data, index) => {
+                    doc.text(["Monthly", "Weekly", "Per Hari"][index], 10, y);
+                    doc.autoTable({
+                      head: [data.headers],
+                      body: data.rows,
+                      startY: y + 5,
+                    });
+                    y = doc.lastAutoTable.finalY + 10;
+                  }
+                );
+
+                doc.save("data-grafik.pdf");
+              } else if (format === "excel") {
+                const wb = XLSX.utils.book_new();
+
+                [monthlyData, weeklyData, perHariData].forEach(
+                  (data, index) => {
+                    const wsData = [data.headers, ...data.rows];
+                    const ws = XLSX.utils.aoa_to_sheet(wsData);
+                    XLSX.utils.book_append_sheet(
+                      wb,
+                      ws,
+                      ["Monthly", "Weekly", "PerHari"][index]
+                    );
+                  }
+                );
+
+                XLSX.writeFile(wb, "data-grafik.xlsx");
+              } else if (format === "excel-image") {
+                const workbook = new ExcelJS.Workbook();
+
+                const charts = [
+                  { id: "monthlyChart", title: "Monthly", data: monthlyData },
+                  { id: "weeklyChart", title: "Weekly", data: weeklyData },
+                  { id: "perHari", title: "PerHari", data: perHariData },
+                ];
+
+                for (const chartInfo of charts) {
+                  const chartElement = document.getElementById(chartInfo.id);
+                  const imageBase64 = chartElement.toDataURL("image/png");
+
+                  const sheet = workbook.addWorksheet(chartInfo.title);
+                  sheet.getCell("A1").value = chartInfo.title + " Chart";
+                  sheet.getRow(1).font = { bold: true };
+
+                  // Tambah gambar chart
+                  const imageId = workbook.addImage({
+                    base64: imageBase64,
+                    extension: "png",
+                  });
+
+                  sheet.addImage(imageId, {
+                    tl: { col: 0, row: 1 },
+                    ext: { width: 800, height: 400 },
+                  });
+                }
+
+                const buffer = await workbook.xlsx.writeBuffer();
+                const blob = new Blob([buffer], {
+                  type: "application/octet-stream",
+                });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "grafik-dengan-gambar.xlsx";
+                a.click();
+                URL.revokeObjectURL(url);
+              }
+            }
+          </script>
+          <script>
+            async function exportChartToExcelWithImage() {
+              const canvas = document.getElementById("monthlyChart");
+              const imageData = canvas.toDataURL("image/png");
+
+              const workbook = new ExcelJS.Workbook();
+              const worksheet = workbook.addWorksheet("Monthly Chart");
+
+              const imageId = workbook.addImage({
+                base64: imageData,
+                extension: "png",
+              });
+
+              worksheet.addImage(imageId, {
+                tl: { col: 1, row: 1 },
+                br: { col: 10, row: 30 },
+                editAs: "oneCell",
+              });
+
+              worksheet.addRow(["Bulan", "Sedang", "Ringan", "Berat"]);
+              const labels = [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "Mei",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Okt",
+                "Nov",
+                "Des",
+              ];
+              const sedang = [2, 1, 1, 1, 1, 1, 1, 1, 300, 400, 500, 200];
+              const ringan = [1, 1, 1, 1, 1, 1, 1, 1, 200, 300, 400, 100];
+              const berat = [5, 6, 5, 6, 5, 6, 5, 6, 5000, 7000, 8000, 3000];
+
+              for (let i = 0; i < labels.length; i++) {
+                worksheet.addRow([labels[i], sedang[i], ringan[i], berat[i]]);
+              }
+
+              const buffer = await workbook.xlsx.writeBuffer();
+              const blob = new Blob([buffer], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              });
+              saveAs(blob, "ChartWithImage.xlsx");
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

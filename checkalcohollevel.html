@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Check Your Alcohol Level</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #92bdf6;
+        font-family: "Outfit", sans-serif;
+        padding: 2rem;
+      }
+
+      .card-health {
+        background-color: #92bdf6;
+        padding: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .btn-back {
+        background-color: #252b61;
+        border: none;
+        border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn-back img {
+        width: 14px;
+        height: 14px;
+      }
+
+      .title {
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
+        font-size: 1.25rem;
+        color: #252b61;
+        margin-left: 10px;
+      }
+
+      .titlee {
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
+        font-size: 1.25rem;
+        color: #252b61;
+        margin-left: 60px;
+      }
+      .subtitle {
+        font-family: "Outfit", sans-serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #252b61;
+        margin-bottom: 1rem;
+        margin-left: 40px;
+      }
+
+      .value {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-left: 60px;
+        color: #252b61;
+      }
+
+      .unit {
+        font-size: 1.2rem;
+        font-family: "Inter", sans-serif;
+        align-self: flex-end;
+        font-weight: bold;
+        margin-left: 20px;
+        color: #716e6e;
+        padding-bottom: 1px;
+      }
+
+      .date {
+        font-family: "Inter", sans-serif;
+        font-weight: 700;
+        font-size: 32px;
+        margin-left: 60px;
+        color: #716e6e;
+      }
+
+      .graph-image {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 35px;
+        border-radius: 8px;
+        display: block;
+      }
+
+      /* Mobile Responsive */
+      @media (max-width: 576px) {
+        body {
+          padding: 1rem;
+        }
+
+        .subtitle {
+          margin-top: 20px;
+          margin-left: 0;
+          /* atau bisa juga 5px sesuai selera */
+        }
+        .value,
+        .date {
+          margin-left: 10px;
+        }
+
+        .graph-image {
+          margin-left: 0;
+          width: 100%;
+          height: auto;
+          max-height: 250px; /* atau bebas kamu bisa atur lebih besar */
+          object-fit: contain;
+        }
+
+        .unit {
+          font-size: 1rem;
+          margin-left: 10px;
+        }
+
+        .date {
+          font-size: 24px;
+        }
+
+        .value {
+          font-size: 1.75rem;
+        }
+
+        .title {
+          font-size: 1.1rem;
+        }
+
+        .btn-back {
+          width: 36px;
+          height: 36px;
+        }
+
+        .btn-back img {
+          width: 12px;
+          height: 12px;
+        }
+        .titlee {
+          margin-left: 10px;
+        }
+
+        .search-bar-custom {
+          margin-left: 0px !important;
+        }
+
+        .history-item {
+          margin-left: 0px !important;
+        }
+      }
+      .search-bar-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 10px 20px;
+      }
+
+      .actions-container {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Jarak antar elemen */
+      }
+
+      .search-bar-custom {
+        display: flex;
+        align-items: center;
+        background-color: #d1f5dd; /* hijau muda */
+        border-radius: 25px;
+        padding: 8px 16px;
+        width: 100%;
+        max-width: 300px;
+        /* margin-left: 60px; HAPUS ini supaya tidak maksa margin ke kiri */
+      }
+
+      .search-bar-custom .search-icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 10px;
+      }
+
+      .search-bar-custom input {
+        border: none;
+        background: transparent;
+        flex: 1;
+        outline: none;
+        font-size: 14px;
+      }
+
+      .search-bar-custom .search-duration {
+        white-space: nowrap;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .export-dropdown {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        cursor: pointer;
+      }
+
+      .print-button {
+        padding: 8px 16px;
+        background-color: #4caf50; /* Hijau */
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .print-button:hover {
+        background-color: #45a049;
+      }
+      .history-item {
+        display: flex;
+        justify-content: space-between;
+        font-family: "Outfit", sans-serif;
+        align-items: center;
+        background-color: #e9fbe9;
+        border: 1px solid #b2e9b7;
+        border-radius: 12px;
+        padding: 10px 14px;
+        margin-left: 60px;
+        margin-bottom: 12px;
+      }
+
+      .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #333;
+        font-size: 16px;
+      }
+
+      .icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .bpm {
+        font-weight: 500;
+        font-size: 16px;
+        color: #222;
+      }
+      .chart-container {
+        width: 100%;
+        max-width: 1120px;
+        height: 270px;
+        margin-top: 80px;
+        margin-left: 50px;
+        background-color: transparent;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card-health">
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn-back" onclick="window.location.href='home.html'">
+          <img src="back.png" alt="Back" />
+        </button>
+        <div class="title">Check Your Alcohol Level</div>
+      </div>
+
+      <div class="search-bar-container">
+        <div class="subtitle">Clean Breath, Check Alcohol Before Going.</div>
+
+        <div class="actions-container">
+          <div class="search-bar-custom">
+            <img
+              src="search-interface-symbol.png"
+              alt="Search"
+              class="search-icon"
+            />
+            <input type="text" placeholder="Cari berdasarkan nama atau ID..." />
+          </div>
+
+          <select class="export-dropdown">
+            <option value="" disabled selected>Export</option>
+            <option value="pdf">Export PDF</option>
+            <option value="excel">Export Excel</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="d-flex align-items-baseline mb-1">
+        <div class="value">20</div>
+        <div class="unit">ppm</div>
+      </div>
+      <div class="date">Friday, 17 June 2025</div>
+      <div class="chart-container">
+        <canvas id="myChart"></canvas>
+      </div>
+      <div class="history">
+        <div class="titlee">Riwayat Kesehatan</div>
+
+        <div class="history-item">
+          <div class="left">
+            <img src="calendar (1).png" alt="calendar" class="icon" />
+            <span>16 June</span>
+          </div>
+          <div class="bpm">22 ppm</div>
+        </div>
+
+        <div class="history-item">
+          <div class="left">
+            <img src="calendar (1).png" alt="calendar" class="icon" />
+            <span>15 June</span>
+          </div>
+          <div class="bpm">18 ppm</div>
+        </div>
+
+        <div class="history-item">
+          <div class="left">
+            <img src="calendar (1).png" alt="calendar" class="icon" />
+            <span>14 June</span>
+          </div>
+          <div class="bpm">21 ppm</div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jsPDF untuk membuat file PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- SheetJS (xlsx) untuk membuat file Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+    <!-- html2canvas untuk screenshot Chart jadi gambar -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+      const ctx = document.getElementById("myChart").getContext("2d");
+      const myChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+          datasets: [
+            {
+              label: "Temperature",
+              data: [20, 15, 18, 17, 30, 10, 25, 18, 17, 30],
+              backgroundColor: "rgba(0, 255, 0, 0.3)",
+              borderColor: "limegreen",
+              borderWidth: 4,
+              fill: true,
+              tension: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              display: false, // tetap sembunyikan sumbu X
+            },
+            y: {
+              display: true, // tampilkan sumbu Y
+              ticks: {
+                color: "#666", // warna angka sumbu Y
+                font: {
+                  size: 14, // ukuran font angka Y
+                },
+                stepSize: 5, // jarak angka (misal 5, 10, 15, 20, dst)
+              },
+              grid: {
+                drawBorder: false, // hilangkan border sumbu
+                color: "rgba(0,0,0,0.05)", // grid line tipis
+              },
+              beginAtZero: true,
+            },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              enabled: false,
+            },
+          },
+        },
+      });
+    </script>
+    <script>
+      const bpmToday = document.querySelector(".value").innerText.trim();
+      const dateToday = document.querySelector(".date").innerText.trim();
+      const historyItems = document.querySelectorAll(".history-item");
+
+      // Ambil data history
+      function getHistoryData() {
+        const history = [];
+        historyItems.forEach((item) => {
+          const date = item.querySelector(".left span").innerText.trim();
+          const bpm = item.querySelector(".bpm").innerText.trim();
+          history.push({ date, bpm });
+        });
+        return history;
+      }
+
+      // Export ke PDF
+      async function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(18);
+        doc.text("Alcohol Rate Report", 14, 20);
+
+        doc.setFontSize(12);
+        doc.text(`Today's Alcohol: ${bpmToday} on ${dateToday}`, 14, 30);
+
+        doc.text("History:", 14, 40);
+        const history = getHistoryData();
+
+        let y = 50;
+        history.forEach((item) => {
+          doc.text(`${item.date} - ${item.bpm}`, 14, y);
+          y += 10;
+        });
+
+        // Screenshot Chart
+        const chartCanvas = document.getElementById("myChart");
+        const chartImage = chartCanvas.toDataURL("image/png");
+
+        doc.addPage();
+        doc.text("Alcohol Chart:", 14, 20);
+        doc.addImage(chartImage, "PNG", 14, 30, 180, 100);
+
+        doc.save("alcohol_report.pdf");
+      }
+
+      // Export ke Excel
+      async function exportToExcel() {
+        const wb = XLSX.utils.book_new();
+
+        // Data Tabel
+        const data = [
+          ["Today's Date", "Today's mg/dL"],
+          [dateToday, bpmToday],
+          [],
+          ["History Date", "ppm"],
+        ];
+        const history = getHistoryData();
+        history.forEach((item) => {
+          data.push([item.date, item.bpm]);
+        });
+
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        XLSX.utils.book_append_sheet(wb, ws, "Sugar Data");
+
+        // Screenshot Chart
+        const chartCanvas = document.getElementById("myChart");
+        const chartImage = await html2canvas(chartCanvas).then((canvas) =>
+          canvas.toDataURL("image/png")
+        );
+
+        // Masukkan Chart ke worksheet baru
+        const wsChart = XLSX.utils.aoa_to_sheet([["Chart Below"]]);
+        XLSX.utils.book_append_sheet(wb, wsChart, "Chart");
+
+        // Embed Image (pake trik SheetJS internal, base64 embedding)
+        const img = new Image();
+        img.src = chartImage;
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+
+          const imageData = canvas.toDataURL("image/png").split(",")[1];
+          const ext = "png";
+
+          if (!wb.Workbook) wb.Workbook = {};
+          if (!wb.Workbook.Media) wb.Workbook.Media = [];
+
+          wb.Workbook.Media.push({
+            name: `chart_image.${ext}`,
+            data: imageData,
+            rels: {
+              "image/png": `chart_image.${ext}`,
+            },
+          });
+
+          XLSX.writeFile(wb, "alcohol_rate_report.xlsx");
+        };
+      }
+
+      // Tombol Export Dropdown
+      document
+        .querySelector(".export-dropdown")
+        .addEventListener("change", async function (e) {
+          const format = e.target.value;
+          if (format === "excel") {
+            exportToExcel();
+          } else if (format === "pdf") {
+            exportToPDF();
+          }
+        });
+
+      async function exportToExcel() {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Alcohol Data");
+
+        // Header Tabel
+        worksheet.columns = [
+          { header: "Tanggal", key: "tanggal", width: 20 },
+          { header: "Alcohol ppm", key: "alcohol", width: 20 }, // Ganti BPM jadi °C
+        ];
+
+        // Data Tabel
+        const data = [
+          { tanggal: "17 June 2025", alcohol: "20 ppm" },
+          { tanggal: "16 June 2025", alcohol: "22 ppm" },
+          { tanggal: "15 June 2025", alcohol: "18 ppm" },
+          { tanggal: "14 June 2025", sualcoholgar: "21 ppm" },
+        ];
+
+        data.forEach((d) => worksheet.addRow(d));
+
+        // Convert Chart ke Image
+        const chartCanvas = document.getElementById("myChart");
+        const base64Image = chartCanvas.toDataURL("image/png");
+
+        const imageId = workbook.addImage({
+          base64: base64Image,
+          extension: "png",
+        });
+
+        // Sisipkan gambar ke worksheet
+        worksheet.addImage(imageId, {
+          tl: { col: 0, row: 6 }, // top-left posisi
+          ext: { width: 500, height: 300 }, // ukuran gambar
+        });
+
+        // Download
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(blob, "AlcoholData.xlsx");
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Website Lelah O-Meter</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #fff;
+        font-family: "Outfit", sans-serif;
+        padding: 2rem;
+      }
+      .btn-back {
+        background-color: #252b61;
+        border: none;
+        border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      /* Gaya untuk popup */
+      .badge-status {
+        cursor: pointer; /* Menambahkan efek kursor tangan saat dihover */
+      }
+      .popup {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .popup-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        margin: 100px auto;
+      }
+
+      .popup-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .popup-table th,
+      .popup-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      .popup-close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .popup-close:hover,
+      .popup-close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .btn-back img {
+        width: 14px;
+        height: 14px;
+      }
+
+      .title {
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
+        font-size: 1.25rem;
+        color: #252b61;
+        margin-left: 10px;
+      }
+      .stat-container {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        font-family: Arial, sans-serif;
+      }
+
+      .stat-box {
+        display: flex;
+        align-items: center;
+        background-color: #ccc;
+        padding: 10px 20px;
+        border-radius: 25px;
+        color: white;
+        font-weight: bold;
+        position: relative;
+      }
+
+      .stat-label {
+        padding-right: 40px;
+      }
+
+      .stat-value {
+        background-color: #252b61;
+        color: inherit;
+        font-weight: bold;
+        padding: 0.5em 0.8em;
+        border-radius: 999px; /* Supaya tetap oval/lonjong jika teks panjang */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid white;
+        min-width: 40px;
+        height: 40px;
+      }
+
+      .badge-status {
+        padding: 0.5em 1em;
+        font-size: 0.85em;
+        border-radius: 5px;
+      }
+      .ringan {
+        background-color: #28a745;
+      }
+
+      .sedang {
+        background-color: #f0ad4e;
+      }
+
+      .berat {
+        background-color: #d9534f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center gap-2">
+                <button
+                  class="btn-back"
+                  onclick="window.location.href='home.html'"
+                >
+                  <img src="back.png" alt="Back" />
+                </button>
+                <div class="title">Lokasi</div>
+                <div id="lokasi-title" class="title"></div>
+              </div>
+              <div class="statistik mt-5">
+                <div class="stat-container gap-5">
+                  <div class="stat-box ringan">
+                    <div class="stat-label">TOTAL RINGAN</div>
+                    <div class="stat-value"></div>
+                  </div>
+
+                  <div class="stat-box sedang">
+                    <div class="stat-label">TOTAL SEDANG</div>
+                    <div class="stat-value"></div>
+                  </div>
+
+                  <div class="stat-box berat">
+                    <div class="stat-label">TOTAL BERAT</div>
+                    <div class="stat-value">/div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="container mt-4">
+                <div
+                  class="d-flex justify-content-between align-items-center mb-3"
+                >
+                  <h4>Data Pemeriksaan</h4>
+                  <div class="d-flex align-items-center gap-2">
+                    <select
+                      id="exportFormatTable"
+                      class="form-select form-select-sm w-auto"
+                    >
+                      <option value="pdf">Export ke PDF</option>
+                      <option value="excel">Export ke Excel</option>
+                    </select>
+                    <button
+                      class="btn btn-primary btn-sm"
+                      onclick="exportTable()"
+                    >
+                      Cetak
+                    </button>
+                  </div>
+                </div>
+                <table
+                  id="dataTableSimple"
+                  class="table table-bordered table-striped"
+                >
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Kode Test</th>
+                      <th>Nama</th>
+                      <th>Jabatan</th>
+                      <th>Tgl Periksa</th>
+                      <th>Pemeriksa</th>
+                      <th>Status</th>
+                      <th>Nilai</th>
+                      <th>ID Pekerja</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr data-lokasi="it-surabaya-lpg">
+                      <td>1</td>
+                      <td>FTQ-1</td>
+                      <td>RAFIF</td>
+                      <td>PEKERJA</td>
+                      <td>04/10/2024 10:10:44</td>
+                      <td>EL</td>
+                      <td>
+                        <span class="badge-status berat">BERAT</span>
+                      </td>
+                      <td>806</td>
+                      <td>123</td>
+                    </tr>
+                    <tr data-lokasi="it-surabaya-lpg">
+                      <td>2</td>
+                      <td>FTQ-3</td>
+                      <td>RA</td>
+                      <td>PEKERJA</td>
+                      <td>04/10/2024 10:19:04</td>
+                      <td>EL</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>212</td>
+                      <td>T6TT6</td>
+                    </tr>
+                    <tr data-lokasi="it-surabaya-lpg">
+                      <td>3</td>
+                      <td>FTQ-10</td>
+                      <td>FEBRI</td>
+                      <td>SOPIR</td>
+                      <td>04/10/2024 11:07:04</td>
+                      <td>ELLA</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>168</td>
+                      <td>123</td>
+                    </tr>
+                    <tr data-lokasi="it-surabaya-lpg">
+                      <td>4</td>
+                      <td>FTQ-8</td>
+                      <td>DEDI</td>
+                      <td>SOPIR</td>
+                      <td>04/10/2024 11:17:04</td>
+                      <td>KENEK</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>150</td>
+                      <td>123</td>
+                    </tr>
+                    <tr data-lokasi="it-surabaya-lpg">
+                      <td>5</td>
+                      <td>FTQ-14</td>
+                      <td>NYARIYANTO</td>
+                      <td>SOPIR</td>
+                      <td>04/10/2024 11:28:44</td>
+                      <td>ELLA</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>480</td>
+                      <td>123</td>
+                    </tr>
+                    <tr data-lokasi="it-surabaya-lpg">
+                      <td>6</td>
+                      <td>FTQ-57</td>
+                      <td>AGUS</td>
+                      <td>SOPIR</td>
+                      <td>04/10/2024 05:19:37</td>
+                      <td>JAMAL</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>179</td>
+                      <td>12</td>
+                    </tr>
+                    <tr data-lokasi="it-surabaya-lpg">
+                      <td>7</td>
+                      <td>FTQ-61</td>
+                      <td>SARWI</td>
+                      <td>SOPIR</td>
+                      <td>05/10/2024 05:44:46</td>
+                      <td>EL</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>326</td>
+                      <td>12</td>
+                    </tr>
+                    <tr data-lokasi="it-surabaya-lpg">
+                      <td>8</td>
+                      <td>FTQ-113</td>
+                      <td>MNJN</td>
+                      <td>PEKERJA</td>
+                      <td>05/10/2024 08:55:51</td>
+                      <td>GKNJ</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>267</td>
+                      <td>CG</td>
+                    </tr>
+                    <tr data-lokasi="it-surabaya-lpg">
+                      <td>9</td>
+                      <td>FTQ-115</td>
+                      <td>DGGJH</td>
+                      <td>PEKERJA</td>
+                      <td>05/10/2024 10:44:02</td>
+                      <td>TUJI</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>257</td>
+                      <td>EYTI</td>
+                    </tr>
+                    <tr data-lokasi="it-surabaya-lpg">
+                      <td>10</td>
+                      <td>FTQ-117</td>
+                      <td>LAMEJO</td>
+                      <td>SOPIR</td>
+                      <td>05/10/2024 10:54:37</td>
+                      <td>EL</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>209</td>
+                      <td>12</td>
+                    </tr>
+                  
+                    <tr data-lokasi="integrated-terminal-t-wangi">
+                      <td>1</td>
+                      <td>FTQ-1</td>
+                      <td>dedik</td>
+                      <td>SOPIR</td>
+                      <td>25/10/2024 9:22:16</td>
+                      <td>sudarmadi</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>171</td>
+                      <td>2245</td>
+                    </tr>
+                    <tr data-lokasi="integrated-terminal-t-wangi">
+                      <td>2</td>
+                      <td>FTQ-2</td>
+                      <td>rijal</td>
+                      <td>SOPIR</td>
+                      <td>25/10/2024 9:26:32</td>
+                      <td>sudarmadi</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>159</td>
+                      <td>2234</td>
+                    </tr> 
+                    <tr data-lokasi="integrated-terminal-t-wangi">
+                      <td>3</td>
+                      <td>FTQ-3</td>
+                      <td>dina</td>
+                      <td>PEKERJA</td>
+                      <td>25/10/2024 9:33:22</td>
+                      <td>SUDARMADI</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>500</td>
+                      <td></td>
+                    </tr>
+                    <tr data-lokasi="integrated-terminal-t-wangi">
+                      <td>4</td>
+                      <td>FTQ-4</td>
+                      <td>panca</td>
+                      <td>SOPIR</td>
+                      <td>25/10/2024 9:33:39</td>
+                      <td>sudarmadi</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>254</td>
+                      <td></td>
+                    </tr>
+                    <tr data-lokasi="integrated-terminal-t-wangi">
+                      <td>5</td>
+                      <td>FTQ-5</td>
+                      <td>david</td>
+                      <td>SOPIR</td>
+                      <td>25/10/2024 9:35:06</td>
+                      <td>sudarmadi</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>196</td>
+                      <td>-</td>
+                    </tr>
+                    <tr data-lokasi="integrated-terminal-t-wangi">
+                      <td>6</td>
+                      <td>FTQ-6</td>
+                      <td>DAVID</td>
+                      <td>PEKERJA</td>
+                      <td>25/10/2024 9:39:18</td>
+                      <td>SUDARMADI</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>202</td>
+                      <td>-</td>
+                    </tr>
+                    <tr data-lokasi="integrated-terminal-t-wangi">
+                      <td>7</td>
+                      <td>FTQ-7</td>
+                      <td>ROBI</td>
+                      <td>SOPIR</td>
+                      <td>25/10/2024 9:40:22</td>
+                      <td>SUDARMADI</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>179</td>
+                      <td>-</td>
+                    </tr>
+                    <tr data-lokasi="integrated-terminal-t-wangi">
+                      <td>8</td>
+                      <td>FTQ-8</td>
+                      <td>DIAN</td>
+                      <td>SOPIR</td>
+                      <td>25/10/2024 9:46:01</td>
+                      <td>SUDARMADI</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>176</td>
+                      <td>-</td>
+                    </tr>
+                    <tr data-lokasi="integrated-terminal-t-wangi">
+                      <td>9</td>
+                      <td>FTQ-9</td>
+                      <td>HENRY</td>
+                      <td>SOPIR</td>
+                      <td>25/10/2024 9:48:41</td>
+                      <td>SUDARMADI</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>222</td>
+                      <td>-</td>
+                    </tr>
+                    <tr data-lokasi="integrated-terminal-t-wangi">
+                      <td>10</td>
+                      <td>FTQ-10</td>
+                      <td>SUPAIRI</td>
+                      <td>SOPIR</td>
+                      <td>25/10/2024 9:50:48</td>
+                      <td>SUDARMADI</td>
+                      <td>
+                        <span class="badge-status ringan">RINGAN</span>
+                      </td>
+                      <td>152</td>
+                      <td>161</td>
+                    </tr>
+                  </tbody>
+                  
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup untuk menampilkan detail -->
+    
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- SheetJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+     
+      function exportTable() {
+        const format = document.getElementById("exportFormatTable").value;
+        const table = document.getElementById("dataTableSimple");
+
+        // Ambil lokasi dari URL
+        const params = new URLSearchParams(window.location.search);
+        const lokasi = params.get("lokasi");
+
+        // Pilih baris-baris yang sesuai dengan lokasi
+        const rows = Array.from(table.rows);
+        const headers = Array.from(rows[0].cells).map((cell) => cell.innerText);
+
+        // Filter hanya baris yang memiliki data-lokasi sesuai dengan parameter URL
+        const data = rows
+          .slice(1) // Mengabaikan header
+          .filter((row) => row.getAttribute("data-lokasi") === lokasi)
+          .map((row) => Array.from(row.cells).map((cell) => cell.innerText));
+
+        // Mengecek format export
+        if (format === "pdf") {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+          doc.text("Data Pemeriksaan", 10, 10);
+          doc.autoTable({
+            head: [headers],
+            body: data,
+            startY: 15,
+          });
+          doc.save("data-pemeriksaan.pdf");
+        } else if (format === "excel") {
+          const wsData = [headers, ...data];
+          const wb = XLSX.utils.book_new();
+          const ws = XLSX.utils.aoa_to_sheet(wsData);
+          XLSX.utils.book_append_sheet(wb, ws, "Pemeriksaan");
+          XLSX.writeFile(wb, "data-pemeriksaan.xlsx");
+        }
+      }
+
+      // Ambil parameter dari URL
+      const params = new URLSearchParams(window.location.search);
+      const lokasi = params.get("lokasi");
+
+      // Data dummy per lokasi (bisa kamu ganti sesuai kebutuhan)
+      const dataLokasi = {
+        "dppu-juanda": "Menampilkan data untuk DPPU Juanda.",
+        "dppu-bil": "Menampilkan data untuk DPPU BIL.",
+        "dppu-blimbingsari": "Menampilkan data untuk DPPU Blimbingsari.",
+        "dppu-salahudin": "Menampilkan data untuk DPPU Salahudin.",
+        "dppu-eltari": "Menampilkan data untuk DPPU Eltari.",
+        "dppu-abdul-rahman-saleh":
+          "Menampilkan data untuk DPPU Abdul Rahman Saleh.",
+        "it-surabaya-lpg": "Menampilkan data untuk IT Surabaya LPG.",
+        "dppu-waingapu": "Menampilkan data untuk DPPU Waingapu.",
+        "integrated-terminal-manggis":
+          "Menampilkan data untuk Integrated Terminal Manggis.",
+        "dppu-fransiskus-seda": "Menampilkan data untuk DPPU Fransiskus Seda.",
+        "it-manggis-lpg": "Menampilkan data untuk IT Manggis LPG.",
+        "dppu-hh-aroeboesman": "Menampilkan data untuk DPPU H.H Aroeboesman.",
+        "integrated-terminal-t-wangi":
+          "Menampilkan data untuk Integrated Terminal T. Wangi.",
+        "dppu-komodo": "Menampilkan data untuk DPPU Komodo.",
+        "dppu-tambolaka": "Menampilkan data untuk DPPU Tambolaka.",
+        "dppu-dhoho": "Menampilkan data untuk DPPU Dhoho.",
+        "bitumen-plant-gresik": "Menampilkan data untuk Bitumen Plant Gresik.",
+        "integrated-terminal-ampenan":
+          "Menampilkan data untuk Integrated Terminal Ampenan.",
+        "integrated-terminal-ampenan-lpg":
+          "Menampilkan data untuk Integrated Terminal Ampenan LPG.",
+        "fuel-terminal-tuban": "Menampilkan data untuk Fuel Terminal Tuban.",
+        "fuel-terminal-tenau": "Menampilkan data untuk Fuel Terminal Tenau.",
+        "fuel-terminal-malang": "Menampilkan data untuk Fuel Terminal Malang.",
+        "fuel-terminal-maumere":
+          "Menampilkan data untuk Fuel Terminal Maumere.",
+        "fuel-terminal-kalabahi":
+          "Menampilkan data untuk Fuel Terminal Kalabahi.",
+        "fuel-terminal-camplong":
+          "Menampilkan data untuk Fuel Terminal Camplong.",
+        "region-jatim-balinus": "Menampilkan data untuk Region Jatim Balinus.",
+        "fuel-terminal-madiun": "Menampilkan data untuk Fuel Terminal Madiun.",
+        "fuel-terminal-badas": "Menampilkan data untuk Fuel Terminal Badas.",
+        "kantor-cabang-denpasar":
+          "Menampilkan data untuk Kantor Cabang Denpasar.",
+        "fuel-terminal-sanggaran":
+          "Menampilkan data untuk Fuel Terminal Sanggaran.",
+        "kantor-cabang-ntt": "Menampilkan data untuk Kantor Cabang NTT.",
+        "fuel-terminal-bima": "Menampilkan data untuk Fuel Terminal Bima.",
+        "fuel-terminal-reo": "Menampilkan data untuk Fuel Terminal Reo.",
+        "kantor-cabang-ntb": "Menampilkan data untuk Kantor Cabang NTB.",
+        "dppu-iswahyudi": "Menampilkan data untuk DPPU Iswahyudi.",
+        "fuel-terminal-ende": "Menampilkan data untuk Fuel Terminal Ende.",
+        "fuel-terminal-waingapu":
+          "Menampilkan data untuk Fuel Terminal Waingapu.",
+        "kantor-cabang-kediri": "Menampilkan data untuk Kantor Cabang Kediri.",
+        "integrated-terminal-surabaya-bandaran":
+          "Menampilkan data untuk Integrated Terminal Surabaya Bandaran.",
+        "fuel-terminal-atapupu":
+          "Menampilkan data untuk Fuel Terminal Atapupu.",
+        "dppu-ngurah-rai": "Menampilkan data untuk DPPU Ngurah Rai.",
+        "it-surabaya-perak": "Menampilkan data untuk IT Surabaya Perak.",
+      };
+
+      // Tampilkan data
+      const title = document.getElementById("lokasi-title");
+      const content = document.getElementById("lokasi-content");
+
+      if (lokasi && dataLokasi[lokasi]) {
+        title.textContent = lokasi.replace(/-/g, " ").toUpperCase();
+        content.textContent = dataLokasi[lokasi];
+      } else {
+        title.textContent = "Data Tidak Ditemukan";
+        content.textContent = "Lokasi tidak dikenali atau belum ada datanya.";
+      }
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const lokasi = urlParams.get("lokasi");
+      
+        let ringan = 0,
+            sedang = 0,
+            berat = 0;
+        let ditemukan = false;
+      
+        const rows = document.querySelectorAll("#dataTableSimple tbody tr");
+      
+        rows.forEach((row) => {
+          const rowLokasi = row.getAttribute("data-lokasi");
+          if (rowLokasi !== lokasi) {
+            row.style.display = "none";
+          } else {
+            ditemukan = true;
+      
+            const nilaiText = row.cells[7]?.textContent.trim(); // Ambil kolom Nilai (kolom ke-8, indeks 7)
+            const nilai = parseFloat(nilaiText.replace(",", "."));
+      
+            let status = "";
+      
+            if (nilai >= 150 && nilai <= 240) {
+              status = "ringan"; // Normal dianggap Ringan
+            } else if (nilai > 240 && nilai < 410) {
+              status = "ringan";
+            } else if (nilai >= 410 && nilai < 580) {
+              status = "sedang";
+            } else if (nilai >= 580) {
+              status = "berat";
+            }
+      
+            // Tambahkan jumlah sesuai status
+            if (status === "ringan") ringan++;
+            else if (status === "sedang") sedang++;
+            else if (status === "berat") berat++;
+      
+            // Update tampilan badge-status di tabel (kalau mau)
+            const badge = row.querySelector(".badge-status");
+            if (badge) {
+              badge.className = "badge-status " + status; // ganti class
+              badge.innerText = status.toUpperCase(); // ganti teks
+            }
+          }
+        });
+      
+        // Update statistik box
+        document.querySelector(".stat-box.ringan .stat-value").textContent = ringan;
+        document.querySelector(".stat-box.sedang .stat-value").textContent = sedang;
+        document.querySelector(".stat-box.berat .stat-value").textContent = berat;
+      
+        // Kalau data tidak ditemukan, tampilkan pesan di dalam tbody
+        if (!ditemukan) {
+          const tbody = document.querySelector("#dataTableSimple tbody");
+          tbody.innerHTML = `<tr><td colspan="9" class="text-center">Data tidak ditemukan untuk lokasi yang dipilih.</td></tr>`;
+        }
+      });
+      </script>
+      
+      
+  </body>
+</html>
