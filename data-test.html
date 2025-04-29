@@ -155,6 +155,54 @@
       .berat {
         background-color: #d9534f;
       }
+      @media screen and (max-width: 768px) {
+        .title {
+          font-size: 1rem;
+        }
+
+        h2 {
+          font-size: 1.2rem;
+        }
+        h4 {
+          font-size: 1rem;
+        }
+
+        .stat-container {
+          flex-direction: column;
+          align-items: center;
+          gap: 0.6rem; /* Lebih rapat dari 1rem, tapi masih ada spasi */
+        }
+
+        .stat-box {
+          padding: 6px 14px; /* Lebih ramping di mobile */
+        }
+
+        .stat-label {
+          font-size: 0.85rem;
+          padding-right: 15px; /* Lebih hemat ruang */
+        }
+
+        .stat-value {
+          min-width: 32px;
+          height: 32px;
+          font-size: 0.8rem;
+        }
+        .responsive-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.5rem;
+  }
+
+  .export-wrapper {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling for iOS */
+}
+      }
     </style>
   </head>
   <body>
@@ -174,7 +222,7 @@
                 <div id="lokasi-title" class="title"></div>
               </div>
               <div class="statistik mt-5">
-                <div class="stat-container gap-5">
+                <div class="stat-container gap-5 gap-md-5 gap-sm-2">
                   <div class="stat-box ringan">
                     <div class="stat-label">TOTAL RINGAN</div>
                     <div class="stat-value"></div>
@@ -187,17 +235,15 @@
 
                   <div class="stat-box berat">
                     <div class="stat-label">TOTAL BERAT</div>
-                    <div class="stat-value">/div>
+                    <div class="stat-value"></div>
                   </div>
                 </div>
               </div>
 
               <div class="container mt-4">
-                <div
-                  class="d-flex justify-content-between align-items-center mb-3"
-                >
-                  <h4>Data Pemeriksaan</h4>
-                  <div class="d-flex align-items-center gap-2">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap responsive-header">
+                  <h4 class="mb-2 mb-md-0">Data Pemeriksaan</h4>
+                  <div class="d-flex align-items-center gap-2 export-wrapper">
                     <select
                       id="exportFormatTable"
                       class="form-select form-select-sm w-auto"
@@ -213,7 +259,10 @@
                     </button>
                   </div>
                 </div>
-                <table
+                
+                </div>
+                <div class="table-responsive">
+                  <table
                   id="dataTableSimple"
                   class="table table-bordered table-striped"
                 >
@@ -361,7 +410,7 @@
                       <td>209</td>
                       <td>12</td>
                     </tr>
-                  
+
                     <tr data-lokasi="integrated-terminal-t-wangi">
                       <td>1</td>
                       <td>FTQ-1</td>
@@ -387,7 +436,7 @@
                       </td>
                       <td>159</td>
                       <td>2234</td>
-                    </tr> 
+                    </tr>
                     <tr data-lokasi="integrated-terminal-t-wangi">
                       <td>3</td>
                       <td>FTQ-3</td>
@@ -493,8 +542,9 @@
                       <td>161</td>
                     </tr>
                   </tbody>
-                  
                 </table>
+                </div>
+                
               </div>
             </div>
           </div>
@@ -503,7 +553,6 @@
     </div>
 
     <!-- Popup untuk menampilkan detail -->
-    
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -515,7 +564,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <script>
-     
       function exportTable() {
         const format = document.getElementById("exportFormatTable").value;
         const table = document.getElementById("dataTableSimple");
@@ -633,26 +681,26 @@
       document.addEventListener("DOMContentLoaded", () => {
         const urlParams = new URLSearchParams(window.location.search);
         const lokasi = urlParams.get("lokasi");
-      
+
         let ringan = 0,
-            sedang = 0,
-            berat = 0;
+          sedang = 0,
+          berat = 0;
         let ditemukan = false;
-      
+
         const rows = document.querySelectorAll("#dataTableSimple tbody tr");
-      
+
         rows.forEach((row) => {
           const rowLokasi = row.getAttribute("data-lokasi");
           if (rowLokasi !== lokasi) {
             row.style.display = "none";
           } else {
             ditemukan = true;
-      
+
             const nilaiText = row.cells[7]?.textContent.trim(); // Ambil kolom Nilai (kolom ke-8, indeks 7)
             const nilai = parseFloat(nilaiText.replace(",", "."));
-      
+
             let status = "";
-      
+
             if (nilai >= 150 && nilai <= 240) {
               status = "ringan"; // Normal dianggap Ringan
             } else if (nilai > 240 && nilai < 410) {
@@ -662,12 +710,12 @@
             } else if (nilai >= 580) {
               status = "berat";
             }
-      
+
             // Tambahkan jumlah sesuai status
             if (status === "ringan") ringan++;
             else if (status === "sedang") sedang++;
             else if (status === "berat") berat++;
-      
+
             // Update tampilan badge-status di tabel (kalau mau)
             const badge = row.querySelector(".badge-status");
             if (badge) {
@@ -676,20 +724,21 @@
             }
           }
         });
-      
+
         // Update statistik box
-        document.querySelector(".stat-box.ringan .stat-value").textContent = ringan;
-        document.querySelector(".stat-box.sedang .stat-value").textContent = sedang;
-        document.querySelector(".stat-box.berat .stat-value").textContent = berat;
-      
+        document.querySelector(".stat-box.ringan .stat-value").textContent =
+          ringan;
+        document.querySelector(".stat-box.sedang .stat-value").textContent =
+          sedang;
+        document.querySelector(".stat-box.berat .stat-value").textContent =
+          berat;
+
         // Kalau data tidak ditemukan, tampilkan pesan di dalam tbody
         if (!ditemukan) {
           const tbody = document.querySelector("#dataTableSimple tbody");
           tbody.innerHTML = `<tr><td colspan="9" class="text-center">Data tidak ditemukan untuk lokasi yang dipilih.</td></tr>`;
         }
       });
-      </script>
-      
-      
+    </script>
   </body>
 </html>
