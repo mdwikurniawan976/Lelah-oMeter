@@ -8,7 +8,7 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
       @media (max-width: 576px) {
         .title {
@@ -65,23 +65,27 @@
         <div class="title">History</div>
       </div>
 
-      <!-- Tabel Kode Test -->
-      <div class="card">
+      <div class="card mb-4">
         <div class="card-body">
-          <table class="table table-striped">
-            <thead>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <input type="text" class="form-control w-50" id="searchKodeTest" placeholder="Cari Kode Test">
+            <button class="btn btn-link text-primary" id="resetSearch">Reset</button>
+          </div>
+      
+          <!-- Tabel Kode Test -->
+          <table class="table table-bordered">
+            <thead class="thead-light">
               <tr>
                 <th scope="col">Kode Test</th>
-                <th scope="col">Periksa</th>
+                <th scope="col">Aksi</th>
               </tr>
             </thead>
             <tbody id="kodeTestTable">
-              <!-- Isi tabel nanti di-generate otomatis -->
+             
             </tbody>
           </table>
         </div>
       </div>
-    </div>
 
     <!-- Modal -->
     <div
@@ -123,6 +127,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 
     <script>
@@ -130,7 +135,7 @@
       const namaTableBody = document.getElementById("namaTableBody");
       const kodeTestTitle = document.getElementById("kodeTestTitle");
       let currentKodeTest = "";
-
+    
       // Data nama acak per kode test
       const dataNama = {
         "FTQ-1": ["Budi", "Ani", "Citra"],
@@ -144,34 +149,63 @@
         "FTQ-9": ["Yani", "Zaki", "Arif"],
         "FTQ-10": ["Bella", "Chandra", "Dina"],
       };
-
+    
       // Generate tabel kode test
       for (let i = 1; i <= 10; i++) {
         const row = document.createElement("tr");
-
+    
         const kodeTestCell = document.createElement("td");
         const kodeTest = `FTQ-${i}`;
         kodeTestCell.textContent = kodeTest;
         row.appendChild(kodeTestCell);
-
+    
         const periksaCell = document.createElement("td");
         const periksaButton = document.createElement("button");
-        periksaButton.className = "btn btn-primary btn-sm";
-        periksaButton.textContent = "Periksa";
+        periksaButton.className = "btn btn-primary d-flex align-items-center";
+        periksaButton.innerHTML = `<i class="bi bi-eye me-2"></i> Periksa`;
         periksaButton.onclick = function () {
           openModal(kodeTest);
         };
         periksaCell.appendChild(periksaButton);
         row.appendChild(periksaCell);
-
+    
         tableBody.appendChild(row);
       }
+    
+      const searchInput = document.getElementById("searchKodeTest");
+const resetSearchButton = document.getElementById("resetSearch");
 
+// Fungsi untuk filter kode test berdasarkan input pencarian
+searchInput.addEventListener("input", function () {
+  const searchTerm = searchInput.value.toLowerCase();
+  
+  // Loop untuk filter kode test
+  const rows = tableBody.querySelectorAll("tr");
+  rows.forEach(row => {
+    const kodeTestCell = row.querySelector("td:first-child");
+    const kodeTest = kodeTestCell.textContent.toLowerCase();
+    
+    if (kodeTest.includes(searchTerm)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+});
+
+// Fungsi untuk mereset pencarian
+resetSearchButton.addEventListener("click", function () {
+  searchInput.value = ""; // Kosongkan input
+  const rows = tableBody.querySelectorAll("tr");
+  rows.forEach(row => {
+    row.style.display = "";
+  });
+});
       // Function untuk buka modal
       function openModal(kodeTest) {
         currentKodeTest = kodeTest;
         kodeTestTitle.innerText = `Kode Test: ${kodeTest}`;
-
+    
         namaTableBody.innerHTML = "";
         dataNama[kodeTest].forEach((nama) => {
           const row = document.createElement("tr");
@@ -180,36 +214,29 @@
           row.appendChild(cell);
           namaTableBody.appendChild(row);
         });
-
-        const myModal = new bootstrap.Modal(
-          document.getElementById("dataModal")
-        );
+    
+        const myModal = new bootstrap.Modal(document.getElementById("dataModal"));
         myModal.show();
       }
-
+    
       // Function untuk cetak PDF
       document.getElementById("cetakPDF").onclick = function () {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-
+    
         // Tulis Kode Test di tengah
         doc.setFontSize(18);
-        doc.text(
-          `Kode Test: ${currentKodeTest}`,
-          doc.internal.pageSize.getWidth() / 2,
-          20,
-          { align: "center" }
-        );
-
+        doc.text(`Kode Test: ${currentKodeTest}`, doc.internal.pageSize.getWidth() / 2, 20, { align: "center" });
+    
         // Bikin header tabel
         const tableColumn = ["No", "Nama"];
         const tableRows = [];
-
+    
         // Isi tabel
         dataNama[currentKodeTest].forEach((nama, index) => {
           tableRows.push([index + 1, nama]);
         });
-
+    
         // AutoTable
         doc.autoTable({
           head: [tableColumn],
@@ -218,9 +245,10 @@
           styles: { halign: "center" },
           headStyles: { fillColor: [37, 43, 97] }, // warna header #252b61
         });
-
+    
         doc.save(`${currentKodeTest}.pdf`);
       };
     </script>
+    
   </body>
 </html>
